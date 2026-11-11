@@ -32,14 +32,8 @@ h1 {
   font-weight: bold;
   background: linear-gradient(
     90deg,
-    red,
-    orange,
-    yellow,
-    lime,
-    cyan,
-    blue,
-    violet,
-    red
+    red, orange, yellow, lime,
+    cyan, blue, violet, red
   );
   background-size: 300%;
   color: transparent;
@@ -49,10 +43,22 @@ h1 {
 }
 
 p {
-  color: white;
-  font-size: 20px;
+  font-size: 23px;
+  font-weight: bold;
   margin-top: 25px;
-  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.rainbow-text {
+  background: linear-gradient(
+    90deg,
+    red, orange, yellow, lime,
+    cyan, blue, violet, red
+  );
+  background-size: 300%;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: rainbow 4s linear infinite;
 }
 
 .line {
@@ -62,26 +68,20 @@ p {
   border-radius: 20px;
   background: linear-gradient(
     90deg,
-    red,
-    orange,
-    yellow,
-    lime,
-    cyan,
-    blue,
-    violet
+    red, orange, yellow, lime,
+    cyan, blue, violet
   );
   background-size: 300%;
   animation: rainbow 3s linear infinite;
 }
 
 @keyframes rainbow {
-  0% { background-position: 0% center; }
-  100% { background-position: 300% center; }
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 5px white; }
-  to { text-shadow: 0 0 20px cyan; }
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 300% center;
+  }
 }
 </style>
 </head>
@@ -89,9 +89,15 @@ p {
 <body>
 
 <div class="container">
+
   <h1>منتظر سایت‌مون باشین 🌈</h1>
+
   <div class="line"></div>
-  <p>یه اتفاق خفن در راهه...</p>
+
+  <p class="rainbow-text">
+    @Donya1122113 در روبیکا
+  </p>
+
 </div>
 
 </body>
