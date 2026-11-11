@@ -4,86 +4,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تکگل شاپ</title>
+<title>QR ساز حرفه‌ای</title>
 
 <style>
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
-
 body {
-    margin: 0;
-    min-height: 100vh;
-    background: #080808;
-    color: #d4af37;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: Tahoma, sans-serif;
+  margin: 0;
+  background: #080808;
+  color: white;
+  font-family: Tahoma, sans-serif;
+  text-align: center;
+  padding: 25px 15px;
 }
-
-.container {
-    text-align: center;
-    padding: 20px;
-    width: 100%;
-}
-
 h1 {
-    font-size: 40px;
-    text-shadow: 0 0 20px #d4af37;
+  color: #d6ae48;
+  margin-top: 35px;
 }
-
-p {
-    color: white;
-    font-size: 18px;
+.card {
+  max-width: 430px;
+  margin: 35px auto;
+  padding: 25px;
+  background: #171717;
+  border: 1px solid #b18b37;
+  border-radius: 18px;
 }
-
+input {
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #b18b37;
+  background: #090909;
+  color: white;
+  font-size: 16px;
+  margin: 15px 0;
+  direction: auto;
+}
 button {
-    background: #d4af37;
-    color: black;
-    border: none;
-    border-radius: 12px;
-    padding: 15px 30px;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-    cursor: pointer;
+  background: #d6ae48;
+  color: black;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 6px;
 }
-
-video {
-    display: none;
-    width: 100%;
-    max-width: 500px;
-    margin: 25px auto;
-    border-radius: 15px;
+button:hover {
+  background: #f0ca65;
+}
+#qrcode {
+  background: white;
+  display: inline-block;
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 20px;
+  min-width: 20px;
+}
+#qrcode img {
+  display: block;
+}
+#download {
+  display: none;
+}
+footer {
+  color: #888;
+  margin-top: 50px;
+  font-size: 12px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<h1>⚡ QR ساز حرفه‌ای</h1>
+<p>متن یا لینک خودت رو وارد کن و QR بساز!</p>
 
-    <h1>سلا معاف قرون دنگ</h1>
+<div class="card">
+  <h2>ساخت کد QR</h2>
 
-    <p>به وب‌سایت ما خوش آمدید</p>
+  <input id="text" type="text"
+  placeholder="متن یا لینک را وارد کن...">
 
-    <button onclick="playVideo()">
-        ▶ پخش ویدئو
-    </button>
+  <br>
 
-    <video id="myVideo" controls playsinline>
-        <source src="VID_20261024_222104_235.mp4" type="video/mp4">
-        مرورگر شما از پخش ویدئو پشتیبانی نمی‌کند.
-    </video>
+  <button onclick="makeQR()">ساخت QR</button>
 
+  <div id="qrcode"></div>
+
+  <br>
+
+  <button id="download" onclick="downloadQR()">
+    دانلود تصویر QR
+  </button>
 </div>
 
+<footer>ساخته شده با ❤️</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script>
-function playVideo() {
-    const video = document.getElementById("myVideo");
-    video.style.display = "block";
-    video.play();
+let qr = null;
+
+function makeQR() {
+  const value = document.getElementById("text").value.trim();
+  const area = document.getElementById("qrcode");
+  const download = document.getElementById("download");
+
+  if (!value) {
+    alert("اول متن یا لینک رو وارد کن!");
+    return;
+  }
+
+  area.innerHTML = "";
+  download.style.display = "inline-block";
+
+  qr = new QRCode(area, {
+    text: value,
+    width: 220,
+    height: 220,
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+function downloadQR() {
+  const area = document.getElementById("qrcode");
+  const canvas = area.querySelector("canvas");
+  const img = area.querySelector("img");
+
+  let url;
+
+  if (canvas) {
+    url = canvas.toDataURL("image/png");
+  } else if (img) {
+    url = img.src;
+  } else {
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "my-qr.png";
+  link.click();
 }
 </script>
 
