@@ -4,152 +4,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR ساز حرفه‌ای</title>
+<title>به‌زودی...</title>
 
 <style>
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
-  background: #080808;
-  color: white;
+  min-height: 100vh;
+  background: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: Tahoma, sans-serif;
+  overflow: hidden;
+}
+
+.container {
   text-align: center;
-  padding: 25px 15px;
+  padding: 20px;
 }
+
 h1 {
-  color: #d6ae48;
-  margin-top: 35px;
-}
-.card {
-  max-width: 430px;
-  margin: 35px auto;
-  padding: 25px;
-  background: #171717;
-  border: 1px solid #b18b37;
-  border-radius: 18px;
-}
-input {
-  width: 100%;
-  padding: 15px;
-  border-radius: 10px;
-  border: 1px solid #b18b37;
-  background: #090909;
-  color: white;
-  font-size: 16px;
-  margin: 15px 0;
-  direction: auto;
-}
-button {
-  background: #d6ae48;
-  color: black;
-  border: none;
-  padding: 14px 20px;
-  border-radius: 10px;
-  font-size: 16px;
+  font-size: clamp(30px, 8vw, 55px);
   font-weight: bold;
-  cursor: pointer;
-  margin: 6px;
+  background: linear-gradient(
+    90deg,
+    red,
+    orange,
+    yellow,
+    lime,
+    cyan,
+    blue,
+    violet,
+    red
+  );
+  background-size: 300%;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  animation: rainbow 4s linear infinite;
 }
-button:hover {
-  background: #f0ca65;
+
+p {
+  color: white;
+  font-size: 20px;
+  margin-top: 25px;
+  animation: glow 2s ease-in-out infinite alternate;
 }
-#qrcode {
-  background: white;
-  display: inline-block;
-  padding: 12px;
-  border-radius: 10px;
-  margin-top: 20px;
-  min-width: 20px;
+
+.line {
+  width: 180px;
+  height: 4px;
+  margin: 30px auto;
+  border-radius: 20px;
+  background: linear-gradient(
+    90deg,
+    red,
+    orange,
+    yellow,
+    lime,
+    cyan,
+    blue,
+    violet
+  );
+  background-size: 300%;
+  animation: rainbow 3s linear infinite;
 }
-#qrcode img {
-  display: block;
+
+@keyframes rainbow {
+  0% { background-position: 0% center; }
+  100% { background-position: 300% center; }
 }
-#download {
-  display: none;
-}
-footer {
-  color: #888;
-  margin-top: 50px;
-  font-size: 12px;
+
+@keyframes glow {
+  from { text-shadow: 0 0 5px white; }
+  to { text-shadow: 0 0 20px cyan; }
 }
 </style>
 </head>
 
 <body>
 
-<h1>⚡ QR ساز حرفه‌ای</h1>
-<p>متن یا لینک خودت رو وارد کن و QR بساز!</p>
-
-<div class="card">
-  <h2>ساخت کد QR</h2>
-
-  <input id="text" type="text"
-  placeholder="متن یا لینک را وارد کن...">
-
-  <br>
-
-  <button onclick="makeQR()">ساخت QR</button>
-
-  <div id="qrcode"></div>
-
-  <br>
-
-  <button id="download" onclick="downloadQR()">
-    دانلود تصویر QR
-  </button>
+<div class="container">
+  <h1>منتظر سایت‌مون باشین 🌈</h1>
+  <div class="line"></div>
+  <p>یه اتفاق خفن در راهه...</p>
 </div>
-
-<footer>سازنده:امیرمحمدملایی</footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<script>
-let qr = null;
-
-function makeQR() {
-  const value = document.getElementById("text").value.trim();
-  const area = document.getElementById("qrcode");
-  const download = document.getElementById("download");
-
-  if (!value) {
-    alert("اول متن یا لینک رو وارد کن!");
-    return;
-  }
-
-  area.innerHTML = "";
-  download.style.display = "inline-block";
-
-  qr = new QRCode(area, {
-    text: value,
-    width: 220,
-    height: 220,
-    correctLevel: QRCode.CorrectLevel.H
-  });
-}
-
-function downloadQR() {
-  const area = document.getElementById("qrcode");
-  const canvas = area.querySelector("canvas");
-  const img = area.querySelector("img");
-
-  let url;
-
-  if (canvas) {
-    url = canvas.toDataURL("image/png");
-  } else if (img) {
-    url = img.src;
-  } else {
-    return;
-  }
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "my-qr.png";
-  link.click();
-}
-</script>
 
 </body>
 </html>
