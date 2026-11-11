@@ -1,11 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>یا علی</title>
+<title>سایت من</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     min-height: 100vh;
@@ -16,18 +21,71 @@ body {
     align-items: center;
     font-family: Tahoma, sans-serif;
 }
-.container { text-align: center; }
+
+.container {
+    text-align: center;
+    padding: 20px;
+    width: 100%;
+}
+
 h1 {
-    font-size: 75px;
+    font-size: 40px;
     text-shadow: 0 0 20px #d4af37;
 }
-p { color: white; font-size: 18px; }
+
+p {
+    color: white;
+    font-size: 18px;
+}
+
+button {
+    background: #d4af37;
+    color: black;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+video {
+    display: none;
+    width: 100%;
+    max-width: 500px;
+    margin: 25px auto;
+    border-radius: 15px;
+}
 </style>
 </head>
+
 <body>
+
 <div class="container">
-    <h1>معاف فشاری شده سوار گاری شده </h1>
-    <p>به وب‌سایت ما خوش نیامدید معاف دلقک</p>
+
+    <h1>سلا معاف قرون دنگ</h1>
+
+    <p>به وب‌سایت ما خوش آمدید</p>
+
+    <button onclick="playVideo()">
+        ▶ پخش ویدئو
+    </button>
+
+    <video id="myVideo" controls playsinline>
+        <source src="VID_20261024_222104_235.mp4" type="video/mp4">
+        مرورگر شما از پخش ویدئو پشتیبانی نمی‌کند.
+    </video>
+
 </div>
+
+<script>
+function playVideo() {
+    const video = document.getElementById("myVideo");
+    video.style.display = "block";
+    video.play();
+}
+</script>
+
 </body>
 </html>
