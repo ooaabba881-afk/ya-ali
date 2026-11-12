@@ -4,35 +4,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سفرهای زیارتی</title>
+<title>سامانه سفرهای زیارتی</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:tahoma;background:#f5f5f5;color:#222}
-header{background:#075b43;color:white;padding:20px;display:flex;justify-content:space-between;align-items:center}
-h1{font-size:21px;margin:0}
-.menu{font-size:28px;cursor:pointer}
-main{max-width:900px;margin:auto;padding:18px}
-.hero{background:#075b43;color:white;padding:30px 15px;text-align:center;border-radius:15px;margin-bottom:20px}
-.hero h2{font-size:24px}
-.card{background:white;border-radius:13px;padding:15px;margin:15px 0;box-shadow:0 2px 8px #0001}
-.card img{width:100%;max-height:220px;object-fit:cover;border-radius:10px}
-button{border:0;padding:12px;border-radius:9px;background:#087b59;color:white;cursor:pointer;font-size:14px;margin:4px}
-button.red{background:#d93636}
-button.gray{background:#555}
+header{background:#075b43;color:white;padding:18px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:20px;margin:0}
+.menu{font-size:30px;cursor:pointer}
+main{max-width:850px;margin:auto;padding:15px}
+.hero{background:#075b43;color:white;text-align:center;padding:30px 12px;border-radius:15px;margin:15px 0}
+.card{background:white;padding:15px;border-radius:13px;margin:14px 0;box-shadow:0 2px 8px #0001}
+.card img{width:100%;max-height:230px;object-fit:cover;border-radius:10px}
+button{background:#087b59;color:white;border:0;padding:12px;border-radius:9px;cursor:pointer;font-family:inherit;margin:4px}
+.red{background:#d93636}
+.gray{background:#555}
 input,textarea{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px;font-family:inherit}
 textarea{min-height:90px}
 .hidden{display:none!important}
-.price{color:#087b59;font-weight:bold;font-size:18px}
-.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:12px;z-index:10}
-.panel{background:white;width:100%;max-width:650px;max-height:92vh;overflow:auto;border-radius:15px;padding:18px}
-.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}
-.tabs button{flex:1;min-width:90px}
-.status{padding:7px;border-radius:7px;font-size:12px;display:inline-block}
+.modal{position:fixed;inset:0;background:#0009;z-index:10;display:flex;align-items:center;justify-content:center;padding:12px}
+.panel{background:white;width:100%;max-width:650px;max-height:92vh;overflow:auto;padding:18px;border-radius:15px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:15px 0}
+.tabs button{flex:1;min-width:80px}
+.price{color:#087b59;font-weight:bold}
+.status{padding:7px;border-radius:7px;font-size:12px}
 .pending{background:#fff1c5;color:#805900}
 .approved{background:#d7f8df;color:#14712c}
 .rejected{background:#ffe0e0;color:#b00000}
-.small{font-size:12px;color:#777}
 footer{text-align:center;padding:25px;color:#888}
+.public-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 4px;border-bottom:1px solid #eee}
+.public-item b{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -43,18 +43,24 @@ footer{text-align:center;padding:25px;color:#888}
 </header>
 
 <main>
+
 <div class="hero">
 <h2>سفری به سوی آرامش</h2>
 <p>زیارت، معنویت و خاطراتی ماندگار</p>
 </div>
 
-<h3>🌙 سفرهای موجود</h3>
+<div style="text-align:center">
+<button onclick="showPublicRequests()">📋 درخواست‌های سفر زائران</button>
+</div>
+
+<h3>🌙 سفرهای زیارتی</h3>
 <div id="trips"></div>
+
 </main>
 
-<footer>تمام حقوق محفوظ است</footer>
+<footer>سامانه سفرهای زیارتی</footer>
 
-<!-- منوی سه نقطه -->
+<!-- منو -->
 <div id="menuModal" class="modal hidden">
 <div class="panel">
 <h3>منوی سایت</h3>
@@ -63,11 +69,11 @@ footer{text-align:center;padding:25px;color:#888}
 </div>
 </div>
 
-<!-- ورود ادمین -->
+<!-- ورود -->
 <div id="loginModal" class="modal hidden">
 <div class="panel">
-<h3>ورود مدیر</h3>
-<input id="adminPassword" type="password" placeholder="رمز مدیریت">
+<h3>ورود مدیریت</h3>
+<input id="adminPassword" type="password" placeholder="رمز ادمین">
 <button onclick="login()">ورود</button>
 <button class="gray" onclick="closeModal('loginModal')">بازگشت</button>
 </div>
@@ -79,46 +85,52 @@ footer{text-align:center;padding:25px;color:#888}
 <h2>⚙️ پنل مدیریت</h2>
 
 <div class="tabs">
-<button onclick="tab('messages')">📩 پیام‌ها</button>
+<button onclick="tab('messages')">📩 درخواست‌ها</button>
 <button onclick="tab('add')">➕ افزودن سفر</button>
 <button onclick="tab('manage')">🧳 سفرها</button>
-<button onclick="tab('settings')">💳 تنظیمات</button>
+<button onclick="tab('settings')">💳 کارت</button>
 </div>
 
-<!-- پیام ها -->
 <div id="messages">
 <h3>درخواست‌های ثبت‌نام</h3>
+<button class="red" onclick="clearAllRequests()">🗑 پاک کردن همه درخواست‌ها</button>
 <div id="requests"></div>
 </div>
 
-<!-- افزودن سفر -->
 <div id="add" class="hidden">
-<h3>افزودن سفر جدید</h3>
+<h3>افزودن سفر</h3>
 <input id="tripTitle" placeholder="نام سفر">
 <textarea id="tripDesc" placeholder="توضیحات سفر"></textarea>
 <input id="tripDate" placeholder="تاریخ حرکت">
-<input id="tripPrice" placeholder="قیمت سفر (تومان)">
+<input id="tripPrice" placeholder="قیمت به تومان">
 <label>عکس سفر:</label>
 <input type="file" id="tripPhoto" accept="image/*">
 <button onclick="addTrip()">ثبت سفر</button>
 </div>
 
-<!-- مدیریت سفرها -->
 <div id="manage" class="hidden">
 <h3>مدیریت سفرها</h3>
 <div id="manageTrips"></div>
 </div>
 
-<!-- تنظیمات -->
 <div id="settings" class="hidden">
 <h3>شماره کارت مقصد</h3>
 <input id="cardNumber" placeholder="شماره کارت">
 <input id="cardOwner" placeholder="نام صاحب کارت">
-<button onclick="saveSettings()">ذخیره تنظیمات</button>
-<p class="small">شماره کارت برای زائران نمایش داده می‌شود.</p>
+<button onclick="saveSettings()">ذخیره</button>
 </div>
 
 <button class="red" onclick="logout()">خروج از مدیریت</button>
+</div>
+</div>
+
+<!-- صفحه عمومی درخواست ها -->
+<div id="publicModal" class="modal hidden">
+<div class="panel">
+<h2>📋 درخواست‌های سفر زائران</h2>
+<p>وضعیت درخواست‌های ثبت‌نام:</p>
+<div id="publicRequestList"></div>
+<button class="gray" onclick="closeModal('publicModal')">بازگشت</button>
 </div>
 </div>
 
@@ -134,7 +146,8 @@ footer{text-align:center;padding:25px;color:#888}
 <div id="registerModal" class="modal hidden">
 <div class="panel">
 <h3>📝 ثبت‌نام زائر</h3>
-<div id="registerTripName"></div>
+<p id="registerTripName"></p>
+
 <input id="visitorName" placeholder="نام">
 <input id="visitorFamily" placeholder="نام خانوادگی">
 <input id="visitorPhone" placeholder="شماره تلفن">
@@ -144,29 +157,37 @@ footer{text-align:center;padding:25px;color:#888}
 <p>شماره کارت:</p>
 <strong id="showCard"></strong>
 <p id="showOwner"></p>
-<p class="small">پس از کارت‌به‌کارت، عکس فیش را انتخاب کنید.</p>
+<p style="font-size:12px;color:#777">پس از کارت‌به‌کارت، عکس فیش را انتخاب کنید.</p>
 </div>
 
-<label>📷 عکس فیش واریزی:</label>
+<label>📷 تصویر فیش:</label>
 <input type="file" id="receipt" accept="image/*">
-<button onclick="submitRequest()">ارسال ثبت‌نام</button>
+
+<button onclick="submitRequest()">ارسال درخواست</button>
 <button class="gray" onclick="closeModal('registerModal')">انصراف</button>
 </div>
 </div>
 
 <script>
-const ADMIN_CODE = "20202056425626";
+const ADMIN_CODE="20202056425626";
 
-let trips = JSON.parse(localStorage.getItem("trips") || "[]");
-let requests = JSON.parse(localStorage.getItem("requests") || "[]");
-let settings = JSON.parse(localStorage.getItem("settings") || '{"card":"","owner":""}');
+let trips=JSON.parse(localStorage.getItem("trips")||"[]");
+let requests=JSON.parse(localStorage.getItem("requests")||"[]");
+let settings=JSON.parse(localStorage.getItem("settings")||'{"card":"","owner":""}');
 
-let selectedTrip = null;
+let selectedTrip=null;
 
 function save(){
  localStorage.setItem("trips",JSON.stringify(trips));
  localStorage.setItem("requests",JSON.stringify(requests));
  localStorage.setItem("settings",JSON.stringify(settings));
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",
+ '"':"&quot;","'":"&#39;"
+ }[c]));
 }
 
 function closeModal(id){
@@ -190,7 +211,7 @@ function login(){
   renderManage();
   loadSettings();
  }else{
-  alert("رمز اشتباه است!");
+  alert("رمز اشتباه است");
  }
 }
 
@@ -206,6 +227,17 @@ function tab(name){
  document.getElementById(name).classList.remove("hidden");
 }
 
+function readImage(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>resolve(reader.result);
+  reader.onerror=reject;
+  reader.readAsDataURL(file);
+}
+
+);
+}
+
 function renderTrips(){
  const box=document.getElementById("trips");
  box.innerHTML="";
@@ -219,26 +251,10 @@ function renderTrips(){
   <div class="card">
   <img src="${t.photo}">
   <h3>${escapeHTML(t.title)}</h3>
-  <p>${escapeHTML(t.date)}</p>
+  <p>📅 ${escapeHTML(t.date)}</p>
   <p class="price">${escapeHTML(t.price)} تومان</p>
   <button onclick="details('${t.id}')">مشاهده اطلاعات</button>
   </div>`;
- });
-}
-
-function escapeHTML(value){
- return String(value).replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-function readImage(file){
- return new Promise((resolve,reject)=>{
-  const reader=new FileReader();
-  reader.onload=()=>resolve(reader.result);
-  reader.onerror=reject;
-  reader.readAsDataURL(file);
  });
 }
 
@@ -254,28 +270,20 @@ async function addTrip(){
   return;
  }
 
- if(!file.type.startsWith("image/")){
-  alert("فایل باید عکس باشد");
-  return;
- }
-
- if(file.size>1500000){
-  alert("حجم عکس باید کمتر از ۱.۵ مگابایت باشد");
+ if(!file.type.startsWith("image/")||file.size>1500000){
+  alert("عکس باید معتبر و کمتر از ۱.۵ مگابایت باشد");
   return;
  }
 
  try{
   const photo=await readImage(file);
-  trips.push({
-   id:Date.now().toString(),
-   title,desc,date,price,photo
-  });
+  trips.push({id:Date.now().toString(),title,desc,date,price,photo});
   save();
   renderTrips();
   renderManage();
   alert("سفر اضافه شد");
  }catch(e){
-  alert("مشکل در خواندن عکس");
+  alert("خطا در دریافت عکس");
  }
 }
 
@@ -287,7 +295,7 @@ function details(id){
  <img src="${selectedTrip.photo}" style="width:100%;border-radius:10px">
  <h2>${escapeHTML(selectedTrip.title)}</h2>
  <p>${escapeHTML(selectedTrip.desc)}</p>
- <p>📅 تاریخ حرکت: ${escapeHTML(selectedTrip.date)}</p>
+ <p>📅 ${escapeHTML(selectedTrip.date)}</p>
  <p class="price">${escapeHTML(selectedTrip.price)} تومان</p>
  <button onclick="register('${selectedTrip.id}')">ثبت‌نام در این سفر</button>
  `;
@@ -300,17 +308,17 @@ function register(id){
  if(!selectedTrip)return;
 
  if(!settings.card){
-  alert("شماره کارت هنوز توسط مدیر ثبت نشده است");
+  alert("شماره کارت ثبت نشده است");
   return;
  }
 
  closeModal("detailModal");
+
  document.getElementById("registerTripName").textContent=
- "سفر انتخابی: "+selectedTrip.title;
+ "سفر: "+selectedTrip.title;
 
  document.getElementById("showCard").textContent=settings.card;
- document.getElementById("showOwner").textContent=
- "به نام: "+settings.owner;
+ document.getElementById("showOwner").textContent="به نام: "+settings.owner;
 
  document.getElementById("registerModal").classList.remove("hidden");
 }
@@ -322,7 +330,7 @@ async function submitRequest(){
  const file=document.getElementById("receipt").files[0];
 
  if(!name||!family||!phone||!file){
-  alert("تمام اطلاعات و عکس فیش لازم است");
+  alert("همه اطلاعات را کامل کنید");
   return;
  }
 
@@ -331,13 +339,8 @@ async function submitRequest(){
   return;
  }
 
- if(!file.type.startsWith("image/")){
-  alert("فیش باید عکس باشد");
-  return;
- }
-
- if(file.size>1500000){
-  alert("حجم عکس باید کمتر از ۱.۵ مگابایت باشد");
+ if(!file.type.startsWith("image/")||file.size>1500000){
+  alert("عکس فیش باید معتبر و کمتر از ۱.۵ مگابایت باشد");
   return;
  }
 
@@ -362,10 +365,20 @@ async function submitRequest(){
    document.getElementById(id).value="";
   });
 
-  alert("ثبت‌نام شما ثبت شد و در انتظار بررسی مدیر است.");
+  alert("درخواست ثبت شد و در انتظار تأیید مدیر است.");
  }catch(e){
-  alert("خطا در ثبت اطلاعات");
+  alert("خطا در ثبت درخواست");
  }
+}
+
+function statusInfo(status){
+ if(status==="approved"){
+  return '<span class="status approved">تأیید شده</span>';
+ }
+ if(status==="rejected"){
+  return '<span class="status rejected">رد شده</span>';
+ }
+ return '<span class="status pending">در حال تأیید</span>';
 }
 
 function renderRequests(){
@@ -373,17 +386,11 @@ function renderRequests(){
  box.innerHTML="";
 
  if(!requests.length){
-  box.innerHTML="<p>هنوز درخواستی ثبت نشده است.</p>";
+  box.innerHTML="<p>درخواستی وجود ندارد.</p>";
   return;
  }
 
  requests.slice().reverse().forEach(r=>{
-  let status=r.status==="pending"?
-   '<span class="status pending">در انتظار بررسی</span>':
-   r.status==="approved"?
-   '<span class="status approved">تأیید شده</span>':
-   '<span class="status rejected">رد شده</span>';
-
   box.innerHTML+=`
   <div class="card">
   <h3>${escapeHTML(r.name)} ${escapeHTML(r.family)}</h3>
@@ -391,7 +398,7 @@ function renderRequests(){
   <p>🕌 ${escapeHTML(r.trip)}</p>
   <p>💰 ${escapeHTML(r.price)} تومان</p>
   <p class="small">${escapeHTML(r.time)}</p>
-  ${status}
+  ${statusInfo(r.status)}
   <p><img src="${r.receipt}" style="width:100%;max-height:250px;object-fit:contain"></p>
   <button onclick="viewReceipt('${r.id}')">مشاهده فیش</button>
   ${r.status==="pending"?`
@@ -409,8 +416,9 @@ function changeStatus(id,status){
  r.status=status;
  save();
  renderRequests();
+ renderPublicRequests();
 
- alert(status==="approved"?"ثبت‌نام تأیید شد":"درخواست رد شد");
+ alert(status==="approved"?"درخواست تأیید شد":"درخواست رد شد");
 }
 
 function viewReceipt(id){
@@ -419,9 +427,44 @@ function viewReceipt(id){
 
  const w=window.open();
  if(w){
-  w.document.write(`<img src="${r.receipt}" style="max-width:100%">`);
-  w.document.title="فیش پرداخت";
+  const img=w.document.createElement("img");
+  img.src=r.receipt;
+  img.style="max-width:100%";
+  w.document.body.appendChild(img);
  }
+}
+
+function renderPublicRequests(){
+ const box=document.getElementById("publicRequestList");
+ box.innerHTML="";
+
+ if(requests.length===0){
+  box.innerHTML="<p>هنوز درخواستی ثبت نشده است.</p>";
+  return;
+ }
+
+ requests.slice().reverse().forEach(r=>{
+  box.innerHTML+=`
+  <div class="public-item">
+  <b>${escapeHTML(r.name)} ${escapeHTML(r.family)}</b>
+  ${statusInfo(r.status)}
+  </div>`;
+ });
+}
+
+function showPublicRequests(){
+ renderPublicRequests();
+ document.getElementById("publicModal").classList.remove("hidden");
+}
+
+function clearAllRequests(){
+ if(!confirm("آیا همه درخواست‌ها حذف شوند؟"))return;
+
+ requests=[];
+ save();
+ renderRequests();
+ renderPublicRequests();
+ alert("تمام درخواست‌ها پاک شدند");
 }
 
 function renderManage(){
