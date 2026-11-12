@@ -3,102 +3,463 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>به‌زودی...</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سفرهای زیارتی</title>
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #050505;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Tahoma, sans-serif;
-  overflow: hidden;
-}
-
-.container {
-  text-align: center;
-  padding: 20px;
-}
-
-h1 {
-  font-size: clamp(30px, 8vw, 55px);
-  font-weight: bold;
-  background: linear-gradient(
-    90deg,
-    red, orange, yellow, lime,
-    cyan, blue, violet, red
-  );
-  background-size: 300%;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: rainbow 4s linear infinite;
-}
-
-p {
-  font-size: 23px;
-  font-weight: bold;
-  margin-top: 25px;
-}
-
-.rainbow-text {
-  background: linear-gradient(
-    90deg,
-    red, orange, yellow, lime,
-    cyan, blue, violet, red
-  );
-  background-size: 300%;
-  color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: rainbow 4s linear infinite;
-}
-
-.line {
-  width: 180px;
-  height: 4px;
-  margin: 30px auto;
-  border-radius: 20px;
-  background: linear-gradient(
-    90deg,
-    red, orange, yellow, lime,
-    cyan, blue, violet
-  );
-  background-size: 300%;
-  animation: rainbow 3s linear infinite;
-}
-
-@keyframes rainbow {
-  0% {
-    background-position: 0% center;
-  }
-  100% {
-    background-position: 300% center;
-  }
-}
+*{box-sizing:border-box}
+body{margin:0;font-family:tahoma;background:#f5f5f5;color:#222}
+header{background:#075b43;color:white;padding:20px;display:flex;justify-content:space-between;align-items:center}
+h1{font-size:21px;margin:0}
+.menu{font-size:28px;cursor:pointer}
+main{max-width:900px;margin:auto;padding:18px}
+.hero{background:#075b43;color:white;padding:30px 15px;text-align:center;border-radius:15px;margin-bottom:20px}
+.hero h2{font-size:24px}
+.card{background:white;border-radius:13px;padding:15px;margin:15px 0;box-shadow:0 2px 8px #0001}
+.card img{width:100%;max-height:220px;object-fit:cover;border-radius:10px}
+button{border:0;padding:12px;border-radius:9px;background:#087b59;color:white;cursor:pointer;font-size:14px;margin:4px}
+button.red{background:#d93636}
+button.gray{background:#555}
+input,textarea{width:100%;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px;font-family:inherit}
+textarea{min-height:90px}
+.hidden{display:none!important}
+.price{color:#087b59;font-weight:bold;font-size:18px}
+.modal{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:12px;z-index:10}
+.panel{background:white;width:100%;max-width:650px;max-height:92vh;overflow:auto;border-radius:15px;padding:18px}
+.tabs{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}
+.tabs button{flex:1;min-width:90px}
+.status{padding:7px;border-radius:7px;font-size:12px;display:inline-block}
+.pending{background:#fff1c5;color:#805900}
+.approved{background:#d7f8df;color:#14712c}
+.rejected{background:#ffe0e0;color:#b00000}
+.small{font-size:12px;color:#777}
+footer{text-align:center;padding:25px;color:#888}
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<header>
+<h1>🕌 سفرهای زیارتی</h1>
+<div class="menu" onclick="showMenu()">⋮</div>
+</header>
 
-  <h1>منتظر سایت‌مون باشین 🌈</h1>
-
-  <div class="line"></div>
-
-  <p class="rainbow-text">
-    @Donya1122113 در روبیکا
-  </p>
-
+<main>
+<div class="hero">
+<h2>سفری به سوی آرامش</h2>
+<p>زیارت، معنویت و خاطراتی ماندگار</p>
 </div>
 
+<h3>🌙 سفرهای موجود</h3>
+<div id="trips"></div>
+</main>
+
+<footer>تمام حقوق محفوظ است</footer>
+
+<!-- منوی سه نقطه -->
+<div id="menuModal" class="modal hidden">
+<div class="panel">
+<h3>منوی سایت</h3>
+<button onclick="adminLogin()">🔐 ورود ادمین</button>
+<button class="gray" onclick="closeModal('menuModal')">بستن</button>
+</div>
+</div>
+
+<!-- ورود ادمین -->
+<div id="loginModal" class="modal hidden">
+<div class="panel">
+<h3>ورود مدیر</h3>
+<input id="adminPassword" type="password" placeholder="رمز مدیریت">
+<button onclick="login()">ورود</button>
+<button class="gray" onclick="closeModal('loginModal')">بازگشت</button>
+</div>
+</div>
+
+<!-- پنل ادمین -->
+<div id="adminModal" class="modal hidden">
+<div class="panel">
+<h2>⚙️ پنل مدیریت</h2>
+
+<div class="tabs">
+<button onclick="tab('messages')">📩 پیام‌ها</button>
+<button onclick="tab('add')">➕ افزودن سفر</button>
+<button onclick="tab('manage')">🧳 سفرها</button>
+<button onclick="tab('settings')">💳 تنظیمات</button>
+</div>
+
+<!-- پیام ها -->
+<div id="messages">
+<h3>درخواست‌های ثبت‌نام</h3>
+<div id="requests"></div>
+</div>
+
+<!-- افزودن سفر -->
+<div id="add" class="hidden">
+<h3>افزودن سفر جدید</h3>
+<input id="tripTitle" placeholder="نام سفر">
+<textarea id="tripDesc" placeholder="توضیحات سفر"></textarea>
+<input id="tripDate" placeholder="تاریخ حرکت">
+<input id="tripPrice" placeholder="قیمت سفر (تومان)">
+<label>عکس سفر:</label>
+<input type="file" id="tripPhoto" accept="image/*">
+<button onclick="addTrip()">ثبت سفر</button>
+</div>
+
+<!-- مدیریت سفرها -->
+<div id="manage" class="hidden">
+<h3>مدیریت سفرها</h3>
+<div id="manageTrips"></div>
+</div>
+
+<!-- تنظیمات -->
+<div id="settings" class="hidden">
+<h3>شماره کارت مقصد</h3>
+<input id="cardNumber" placeholder="شماره کارت">
+<input id="cardOwner" placeholder="نام صاحب کارت">
+<button onclick="saveSettings()">ذخیره تنظیمات</button>
+<p class="small">شماره کارت برای زائران نمایش داده می‌شود.</p>
+</div>
+
+<button class="red" onclick="logout()">خروج از مدیریت</button>
+</div>
+</div>
+
+<!-- جزئیات سفر -->
+<div id="detailModal" class="modal hidden">
+<div class="panel">
+<div id="detailContent"></div>
+<button class="gray" onclick="closeModal('detailModal')">بازگشت</button>
+</div>
+</div>
+
+<!-- ثبت نام -->
+<div id="registerModal" class="modal hidden">
+<div class="panel">
+<h3>📝 ثبت‌نام زائر</h3>
+<div id="registerTripName"></div>
+<input id="visitorName" placeholder="نام">
+<input id="visitorFamily" placeholder="نام خانوادگی">
+<input id="visitorPhone" placeholder="شماره تلفن">
+
+<div class="card">
+<h4>💳 اطلاعات پرداخت</h4>
+<p>شماره کارت:</p>
+<strong id="showCard"></strong>
+<p id="showOwner"></p>
+<p class="small">پس از کارت‌به‌کارت، عکس فیش را انتخاب کنید.</p>
+</div>
+
+<label>📷 عکس فیش واریزی:</label>
+<input type="file" id="receipt" accept="image/*">
+<button onclick="submitRequest()">ارسال ثبت‌نام</button>
+<button class="gray" onclick="closeModal('registerModal')">انصراف</button>
+</div>
+</div>
+
+<script>
+const ADMIN_CODE = "20202056425626";
+
+let trips = JSON.parse(localStorage.getItem("trips") || "[]");
+let requests = JSON.parse(localStorage.getItem("requests") || "[]");
+let settings = JSON.parse(localStorage.getItem("settings") || '{"card":"","owner":""}');
+
+let selectedTrip = null;
+
+function save(){
+ localStorage.setItem("trips",JSON.stringify(trips));
+ localStorage.setItem("requests",JSON.stringify(requests));
+ localStorage.setItem("settings",JSON.stringify(settings));
+}
+
+function closeModal(id){
+ document.getElementById(id).classList.add("hidden");
+}
+
+function showMenu(){
+ document.getElementById("menuModal").classList.remove("hidden");
+}
+
+function adminLogin(){
+ closeModal("menuModal");
+ document.getElementById("loginModal").classList.remove("hidden");
+}
+
+function login(){
+ if(document.getElementById("adminPassword").value===ADMIN_CODE){
+  closeModal("loginModal");
+  document.getElementById("adminModal").classList.remove("hidden");
+  renderRequests();
+  renderManage();
+  loadSettings();
+ }else{
+  alert("رمز اشتباه است!");
+ }
+}
+
+function logout(){
+ closeModal("adminModal");
+ document.getElementById("adminPassword").value="";
+}
+
+function tab(name){
+ ["messages","add","manage","settings"].forEach(id=>{
+  document.getElementById(id).classList.add("hidden");
+ });
+ document.getElementById(name).classList.remove("hidden");
+}
+
+function renderTrips(){
+ const box=document.getElementById("trips");
+ box.innerHTML="";
+
+ if(trips.length===0){
+  box.innerHTML='<div class="card">هنوز سفری اضافه نشده است.</div>';
+ }
+
+ trips.forEach(t=>{
+  box.innerHTML+=`
+  <div class="card">
+  <img src="${t.photo}">
+  <h3>${escapeHTML(t.title)}</h3>
+  <p>${escapeHTML(t.date)}</p>
+  <p class="price">${escapeHTML(t.price)} تومان</p>
+  <button onclick="details('${t.id}')">مشاهده اطلاعات</button>
+  </div>`;
+ });
+}
+
+function escapeHTML(value){
+ return String(value).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function readImage(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>resolve(reader.result);
+  reader.onerror=reject;
+  reader.readAsDataURL(file);
+ });
+}
+
+async function addTrip(){
+ const title=document.getElementById("tripTitle").value.trim();
+ const desc=document.getElementById("tripDesc").value.trim();
+ const date=document.getElementById("tripDate").value.trim();
+ const price=document.getElementById("tripPrice").value.trim();
+ const file=document.getElementById("tripPhoto").files[0];
+
+ if(!title||!desc||!date||!price||!file){
+  alert("همه قسمت‌ها را کامل کنید");
+  return;
+ }
+
+ if(!file.type.startsWith("image/")){
+  alert("فایل باید عکس باشد");
+  return;
+ }
+
+ if(file.size>1500000){
+  alert("حجم عکس باید کمتر از ۱.۵ مگابایت باشد");
+  return;
+ }
+
+ try{
+  const photo=await readImage(file);
+  trips.push({
+   id:Date.now().toString(),
+   title,desc,date,price,photo
+  });
+  save();
+  renderTrips();
+  renderManage();
+  alert("سفر اضافه شد");
+ }catch(e){
+  alert("مشکل در خواندن عکس");
+ }
+}
+
+function details(id){
+ selectedTrip=trips.find(t=>t.id===id);
+ if(!selectedTrip)return;
+
+ document.getElementById("detailContent").innerHTML=`
+ <img src="${selectedTrip.photo}" style="width:100%;border-radius:10px">
+ <h2>${escapeHTML(selectedTrip.title)}</h2>
+ <p>${escapeHTML(selectedTrip.desc)}</p>
+ <p>📅 تاریخ حرکت: ${escapeHTML(selectedTrip.date)}</p>
+ <p class="price">${escapeHTML(selectedTrip.price)} تومان</p>
+ <button onclick="register('${selectedTrip.id}')">ثبت‌نام در این سفر</button>
+ `;
+
+ document.getElementById("detailModal").classList.remove("hidden");
+}
+
+function register(id){
+ selectedTrip=trips.find(t=>t.id===id);
+ if(!selectedTrip)return;
+
+ if(!settings.card){
+  alert("شماره کارت هنوز توسط مدیر ثبت نشده است");
+  return;
+ }
+
+ closeModal("detailModal");
+ document.getElementById("registerTripName").textContent=
+ "سفر انتخابی: "+selectedTrip.title;
+
+ document.getElementById("showCard").textContent=settings.card;
+ document.getElementById("showOwner").textContent=
+ "به نام: "+settings.owner;
+
+ document.getElementById("registerModal").classList.remove("hidden");
+}
+
+async function submitRequest(){
+ const name=document.getElementById("visitorName").value.trim();
+ const family=document.getElementById("visitorFamily").value.trim();
+ const phone=document.getElementById("visitorPhone").value.trim();
+ const file=document.getElementById("receipt").files[0];
+
+ if(!name||!family||!phone||!file){
+  alert("تمام اطلاعات و عکس فیش لازم است");
+  return;
+ }
+
+ if(!/^[0-9۰-۹+ -]{10,16}$/.test(phone)){
+  alert("شماره تلفن معتبر نیست");
+  return;
+ }
+
+ if(!file.type.startsWith("image/")){
+  alert("فیش باید عکس باشد");
+  return;
+ }
+
+ if(file.size>1500000){
+  alert("حجم عکس باید کمتر از ۱.۵ مگابایت باشد");
+  return;
+ }
+
+ try{
+  const receipt=await readImage(file);
+
+  requests.push({
+   id:Date.now().toString(),
+   name,family,phone,
+   trip:selectedTrip.title,
+   tripId:selectedTrip.id,
+   price:selectedTrip.price,
+   receipt,
+   status:"pending",
+   time:new Date().toLocaleString("fa-IR")
+  });
+
+  save();
+  closeModal("registerModal");
+
+  ["visitorName","visitorFamily","visitorPhone","receipt"].forEach(id=>{
+   document.getElementById(id).value="";
+  });
+
+  alert("ثبت‌نام شما ثبت شد و در انتظار بررسی مدیر است.");
+ }catch(e){
+  alert("خطا در ثبت اطلاعات");
+ }
+}
+
+function renderRequests(){
+ const box=document.getElementById("requests");
+ box.innerHTML="";
+
+ if(!requests.length){
+  box.innerHTML="<p>هنوز درخواستی ثبت نشده است.</p>";
+  return;
+ }
+
+ requests.slice().reverse().forEach(r=>{
+  let status=r.status==="pending"?
+   '<span class="status pending">در انتظار بررسی</span>':
+   r.status==="approved"?
+   '<span class="status approved">تأیید شده</span>':
+   '<span class="status rejected">رد شده</span>';
+
+  box.innerHTML+=`
+  <div class="card">
+  <h3>${escapeHTML(r.name)} ${escapeHTML(r.family)}</h3>
+  <p>📱 ${escapeHTML(r.phone)}</p>
+  <p>🕌 ${escapeHTML(r.trip)}</p>
+  <p>💰 ${escapeHTML(r.price)} تومان</p>
+  <p class="small">${escapeHTML(r.time)}</p>
+  ${status}
+  <p><img src="${r.receipt}" style="width:100%;max-height:250px;object-fit:contain"></p>
+  <button onclick="viewReceipt('${r.id}')">مشاهده فیش</button>
+  ${r.status==="pending"?`
+  <button onclick="changeStatus('${r.id}','approved')">تأیید</button>
+  <button class="red" onclick="changeStatus('${r.id}','rejected')">رد کردن</button>
+  `:""}
+  </div>`;
+ });
+}
+
+function changeStatus(id,status){
+ const r=requests.find(x=>x.id===id);
+ if(!r)return;
+
+ r.status=status;
+ save();
+ renderRequests();
+
+ alert(status==="approved"?"ثبت‌نام تأیید شد":"درخواست رد شد");
+}
+
+function viewReceipt(id){
+ const r=requests.find(x=>x.id===id);
+ if(!r)return;
+
+ const w=window.open();
+ if(w){
+  w.document.write(`<img src="${r.receipt}" style="max-width:100%">`);
+  w.document.title="فیش پرداخت";
+ }
+}
+
+function renderManage(){
+ const box=document.getElementById("manageTrips");
+ box.innerHTML="";
+
+ trips.forEach(t=>{
+  box.innerHTML+=`
+  <div class="card">
+  <b>${escapeHTML(t.title)}</b>
+  <p>${escapeHTML(t.price)} تومان</p>
+  <button class="red" onclick="deleteTrip('${t.id}')">حذف سفر</button>
+  </div>`;
+ });
+}
+
+function deleteTrip(id){
+ if(!confirm("این سفر حذف شود؟"))return;
+
+ trips=trips.filter(t=>t.id!==id);
+ save();
+ renderTrips();
+ renderManage();
+}
+
+function loadSettings(){
+ document.getElementById("cardNumber").value=settings.card;
+ document.getElementById("cardOwner").value=settings.owner;
+}
+
+function saveSettings(){
+ settings.card=document.getElementById("cardNumber").value.trim();
+ settings.owner=document.getElementById("cardOwner").value.trim();
+ save();
+ alert("شماره کارت ذخیره شد");
+}
+
+renderTrips();
+</script>
 </body>
 </html>
